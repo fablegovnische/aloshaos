@@ -1,17 +1,29 @@
 .global st
 st:
-ldr sp,=0x70010000
+b go
+nop
+nop
+nop
+nop
+nop
+nop
+nop
+b go
+.word 0x016f2818
+.word 0x00000000
+.word 0x00080000
+go:
+adr r0,st
+mov r1,#0x100000
+add sp,r0,r1
+bl hw
 bl ds
+bl bm
 bl tx
-ldr r0,=0x10009000
-ldr r1,=ms
-lp:
-ldrb r2,[r1],#1
-cmp r2,#0
-beq en
-strb r2,[r0]
-b lp
+adr r0,ms
+bl us
 en:
+wfi
 b en
 ms:
 .asciz "AloshaOS\n"

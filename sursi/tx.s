@@ -1,23 +1,26 @@
 .global tx
 tx:
 push {r4-r11,lr}
-ldr r0,=ts
+bl gp
+ldr r8,[r0,#4]
+ldr r9,[r0,#8]
+ldr r5,[r0,#28]
+ldr r11,[r0,#20]
+adr r0,ts
 mov r2,#0
 ln:
 ldrb r1,[r0],#1
 cmp r1,#0
-beq go
+beq ce
 add r2,r2,#1
 b ln
-go:
+ce:
 lsl r2,r2,#4
-rsb r4,r2,#242
+add r4,r9,#2
+sub r4,r4,r2
 asr r4,r4,#1
-mov r5,#153
-ldr r6,=ts
-ldr r7,=fn
-ldr r8,=0x70020000
-ldr r9,=0x09c1
+adr r6,ts
+adr r7,fn
 ch:
 ldrb r0,[r6],#1
 cmp r0,#0
@@ -41,17 +44,16 @@ mov r10,#0
 rx:
 tst r3,#0x80
 beq sk
-add r11,r5,r2,lsl #1
-mov r0,#240
-mul r11,r0,r11
-add r0,r4,r10,lsl #1
-add r11,r11,r0
-add r11,r8,r11,lsl #1
-strh r9,[r11,#0]
-strh r9,[r11,#2]
-add r11,r11,#480
-strh r9,[r11,#0]
-strh r9,[r11,#2]
+add r0,r5,r2,lsl #1
+mul r0,r9,r0
+add ip,r4,r10,lsl #1
+add r0,r0,ip
+add r0,r8,r0,lsl #1
+strh r11,[r0,#0]
+strh r11,[r0,#2]
+add r0,r0,r9,lsl #1
+strh r11,[r0,#0]
+strh r11,[r0,#2]
 sk:
 lsl r3,r3,#1
 add r10,r10,#1
@@ -64,6 +66,7 @@ nx:
 add r4,r4,#16
 b ch
 dn:
+bl fl
 pop {r4-r11,pc}
 ts:
 .asciz "ALOSHAAAA"
